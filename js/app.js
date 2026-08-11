@@ -651,6 +651,47 @@
     el('btn-reset-total').addEventListener('click', reinitialiserTout);
   }
 
+  /* ---------- PWA : service worker et installation ---------- */
+
+  var evenementInstallation = null; // invite d'installation mise de côté
+
+  function initPWA() {
+    var bouton = el('btn-installer');
+
+    /* Le service worker n'est disponible qu'en http(s) : en file://,
+       l'enregistrement échoue avec une erreur de sécurité, sans conséquence
+       pour le reste de l'application. */
+    if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+      navigator.serviceWorker.register('./sw.js').catch(function () { /* ignoré */ });
+    }
+
+    /* Chrome émet cet événement lorsque l'application remplit ses critères
+       d'installation. On l'intercepte pour proposer l'installation depuis
+       notre propre bouton plutôt que depuis la seule icône de la barre d'adresse. */
+    window.addEventListener('beforeinstallprompt', function (evenement) {
+      evenement.preventDefault();
+      evenementInstallation = evenement;
+      bouton.hidden = false;
+    });
+
+    bouton.addEventListener('click', function () {
+      if (!evenementInstallation) return;
+      evenementInstallation.prompt();
+      evenementInstallation.userChoice.then(function (choix) {
+        if (choix && choix.outcome === 'accepted') UI.toast('Application installée.', 'succes');
+        evenementInstallation = null;
+        bouton.hidden = true;
+      });
+    });
+
+    /* Installation lancée depuis le menu du navigateur : le bouton devient inutile. */
+    window.addEventListener('appinstalled', function () {
+      evenementInstallation = null;
+      bouton.hidden = true;
+      UI.toast('Application installée.', 'succes');
+    });
+  }
+
   /* ---------- Démarrage ---------- */
 
   function init() {
@@ -679,6 +720,7 @@
     }
 
     cablerEvenements();
+    initPWA();
     rendre();
   }
 

@@ -140,6 +140,45 @@ Dans **Données** :
 - **Réinitialiser toutes les données** — efface tout et repart d'une installation
   vierge. Pensez à exporter d'abord.
 
+### Installer l'application
+
+L'application est une **PWA** : elle s'installe comme une application de bureau
+ou de téléphone, avec sa propre fenêtre, son icône, et un fonctionnement hors ligne.
+
+> **L'installation exige une origine `https://`** (ou `http://localhost`). En
+> ouvrant `index.html` par double-clic, l'adresse est `file://` : Chrome ne
+> proposera **aucune** installation, c'est une règle du navigateur et non un
+> défaut de l'application. Il faut donc passer par le site publié sur GitHub
+> Pages, ou par un serveur local.
+
+**Sur Chrome / Edge, ordinateur de bureau**
+
+1. Ouvrez le site publié : `https://<votre-compte>.github.io/wishlist/`.
+2. Cliquez sur le bouton **⬇ Installer** dans l'en-tête de l'application — il
+   n'apparaît que lorsque le navigateur juge l'application installable.
+3. À défaut, utilisez l'icône d'installation dans la barre d'adresse (un écran
+   avec une flèche, à droite de l'URL), ou le menu **⋮ ▸ Diffuser, enregistrer
+   et partager ▸ Installer la page en tant qu'application**.
+
+**Sur Safari, iOS** : bouton Partager ▸ *Sur l'écran d'accueil*.
+**Sur Chrome, Android** : menu ⋮ ▸ *Installer l'application*.
+
+Le bouton d'installation reste masqué tant que le navigateur ne signale pas
+l'application comme installable — donc toujours en `file://`, et une fois
+l'application déjà installée.
+
+**Pour tester l'installation sans publier**, un serveur local suffit, `localhost`
+étant considéré comme une origine sûre :
+
+```bash
+python3 -m http.server 8000
+# puis ouvrez http://localhost:8000
+```
+
+Les données restent attachées à l'origine : celles saisies sur `localhost` ne
+suivront pas vers la version publiée. Utilisez l'export/import JSON pour les
+transférer.
+
 ### Thème
 
 L'application reprend la palette du Budget Planner (`essara43/budget`), déjà
@@ -182,6 +221,11 @@ wishlist/
 │   ├── io.js           Export JSON/CSV, lecture et fusion d'un import
 │   ├── ui.js           Rendu DOM, modales, notifications, thème
 │   └── app.js          État, câblage des événements, orchestration
+├── manifest.json       Manifeste PWA (nom, icônes, couleurs)
+├── sw.js               Service worker : installabilité et mode hors ligne
+├── icons/              Icônes PNG 192 et 512, en variantes « any » et « maskable »
+├── scripts/
+│   └── generate-icons.mjs   Régénère les icônes (Node pur, sans dépendance)
 ├── .nojekyll           Désactive le traitement Jekyll sur GitHub Pages
 ├── .gitignore
 └── README.md
@@ -292,6 +336,11 @@ Le site vit à la racine du dépôt : il n'y a aucun chemin à adapter.
 
 Aucun workflow GitHub Actions n'est nécessaire : le site étant statique et sans
 build, le mode « Deploy from a branch » suffit et republie à chaque `git push`.
+
+Le service worker sert le **réseau en priorité** : un déploiement récent est donc
+pris en compte dès le rechargement suivant, le cache ne servant que de repli hors
+ligne. Après avoir modifié la liste des fichiers de `sw.js`, incrémentez la
+constante `CACHE` pour que l'ancien cache soit purgé.
 
 Quelques précisions utiles :
 

@@ -7,6 +7,17 @@
   <title>Wishlist Manager</title>
   <meta name="description" content="Gestionnaire de listes d'envies 100 % local : aucune donnée n'est envoyée vers un serveur.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🎁</text></svg>">
+
+  <!-- PWA : rend l'application installable et utilisable hors ligne.
+       L'installation exige une origine https:// (ou localhost) : en ouvrant
+       le fichier en file://, le navigateur ne proposera rien. -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#ffd3e6">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Wishlist">
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -31,6 +42,7 @@
                 aria-label="Gérer les catégories">Catégories</button>
         <button type="button" class="btn btn--fantome" id="btn-donnees"
                 aria-label="Import, export et réinitialisation des données">Données</button>
+        <button type="button" class="btn btn--principal" id="btn-installer" hidden>⬇ Installer</button>
         <button type="button" class="btn btn--fantome btn--icone" id="btn-theme"
                 aria-label="Basculer entre le thème clair et le thème sombre" aria-pressed="false">
           <span id="btn-theme-icone" aria-hidden="true">🌙</span>
