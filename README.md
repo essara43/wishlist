@@ -248,15 +248,11 @@ Points de conception :
 
 ## Publier sur GitHub Pages
 
-Le dépôt est déjà à la racine du site : il n'y a rien à adapter.
+Le site vit à la racine du dépôt : il n'y a aucun chemin à adapter.
 
-1. **Poussez le code** sur GitHub (branche `main`, par exemple) :
-
-   ```bash
-   git add .
-   git commit -m "Wishlist Manager"
-   git push -u origin main
-   ```
+1. **Assurez-vous que le code est sur la branche à publier**, en général `main`.
+   Si vous passez par une pull request, fusionnez-la d'abord — Pages ne sert que
+   ce qui est présent sur la branche choisie.
 
 2. Sur GitHub, ouvrez le dépôt puis **Settings ▸ Pages**.
 
@@ -273,7 +269,10 @@ Le dépôt est déjà à la racine du site : il n'y a rien à adapter.
 
 5. Vérifiez que le site s'affiche. En cas de page blanche, ouvrez la console du
    navigateur : une erreur 404 sur `css/style.css` ou `js/app.js` signale que les
-   fichiers n'ont pas été poussés à la racine du dépôt.
+   fichiers ne sont pas à la racine de la branche publiée.
+
+Aucun workflow GitHub Actions n'est nécessaire : le site étant statique et sans
+build, le mode « Deploy from a branch » suffit et republie à chaque `git push`.
 
 Quelques précisions utiles :
 
