@@ -41,7 +41,7 @@
       version: M.VERSION_SCHEMA,
       updatedAt: new Date().toISOString(),
       settings: {
-        theme: 'dark',
+        theme: 'light',
         view: 'cards',
         defaultCurrency: 'EUR',
         activeListId: listePrincipale.id,
@@ -116,7 +116,7 @@
     /* --- Réglages --- */
     var s = (data.settings && typeof data.settings === 'object') ? data.settings : {};
     var settings = {
-      theme: (s.theme === 'light') ? 'light' : 'dark',
+      theme: (s.theme === 'dark') ? 'dark' : 'light',
       view: (s.view === 'list') ? 'list' : 'cards',
       defaultCurrency: M.CODES_DEVISES.indexOf(s.defaultCurrency) !== -1 ? s.defaultCurrency : 'EUR',
       activeListId: idsListes.indexOf(M.versTexte(s.activeListId)) !== -1 ? s.activeListId : lists[0].id,

@@ -1,7 +1,7 @@
 /* ==========================================================================
    Wishlist Manager — feuille de style unique
    Organisation :
-   1. Jetons de thème (variables CSS) — sombre par défaut, clair en surcharge
+   1. Jetons de thème (variables CSS) — clair par défaut, sombre en surcharge
    2. Base et utilitaires
    3. En-tête
    4. Tableau de bord
@@ -13,48 +13,72 @@
    ========================================================================== */
 
 /* ============ 1. JETONS DE THÈME ============ */
-/* Le thème sombre est la valeur par défaut, appliquée sur <html data-theme="dark">. */
+/*
+ * Palette partagée avec Budget Planner (essara43/budget) et Goal Planner
+ * (essara43/Goal-Planner). Tokens d'origine du Budget Planner :
+ *   --bg #fff0f6  --bg-elev #ffffff  --bg-elev-2 #fff2f8  --border #ffd3e6
+ *   --text #6d4257  --text-dim #c087a4  --accent #ff85b3  --accent-dim #ffc2da
+ *   --red #ff6f91  --yellow #ffcf5c  --blue #8ecae6
+ *   --radius 18px  --shadow 0 6px 18px rgba(255,133,179,.18)
+ *
+ * On reprend les corrections de lisibilité déjà actées par le Goal Planner :
+ *   - le gris-rose #c087a4 ne porte que 2,6:1 sur le fond, remplacé par #9c5c7c ;
+ *   - le rose #ff85b3 avec du texte blanc ne porte que 2,3:1, donc les aplats
+ *     pleins (boutons, étiquettes) utilisent --accent-fort #c92f70.
+ * Le rose d'origine reste employé partout où il ne sert pas de fond à du texte :
+ *   bordures actives, barres du tableau de bord, halos.
+ *
+ * Le thème clair est la valeur par défaut, comme dans les deux autres apps.
+ */
 :root,
-:root[data-theme="dark"] {
-  --fond: #12141a;
-  --fond-eleve: #191c24;
-  --fond-eleve-2: #212533;
-  --bordure: #2e3342;
-  --bordure-forte: #3d4459;
-  --texte: #e8eaf0;
-  --texte-doux: #a3aabd;         /* contraste ≈ 7:1 sur --fond */
-  --texte-tres-doux: #7f879c;
-  --accent: #7aa2ff;
-  --accent-fort: #9bb8ff;
-  --accent-contraste: #0f1117;   /* texte posé sur --accent */
-  --danger: #ff7b7b;
-  --danger-fond: #3a1e22;
-  --succes: #6fd39b;
-  --alerte: #ffcc66;
-  --ombre: 0 10px 30px rgba(0, 0, 0, .45);
-  --rayon: 12px;
+:root[data-theme="light"] {
+  --fond: #fff0f6;
+  --fond-eleve: #ffffff;
+  --fond-eleve-2: #fff2f8;
+  --bordure: #ffd3e6;
+  --bordure-forte: #ffc2da;
+  --texte: #6d4257;
+  --texte-doux: #8a4f6d;          /* 5,6:1 sur le fond rose — le #9c5c7c du
+                                     Goal Planner y tombe pile à 4,50:1 */
+  --texte-tres-doux: #96567a;     /* 4,9:1 : second niveau, toujours AA */
+  --accent: #ff85b3;              /* décoratif uniquement, jamais sous du texte */
+  --accent-fort: #c92f70;         /* aplats pleins et texte d'accent */
+  --accent-contraste: #ffffff;
+  --danger: #b3143c;
+  --danger-fond: #ffe3ea;
+  --succes: #17694a;
+  --alerte: #8a5a00;
+  --info: #14607f;
+  --halo-1: #ffe0ef;              /* halo rose, en haut à droite */
+  --halo-2: #e9dcff;              /* halo parme, en bas à gauche */
+  --ombre: 0 6px 18px rgba(255, 133, 179, .18);
+  --rayon: 18px;
   --rayon-sm: 8px;
   --transition: 140ms ease;
 }
 
-/* Thème clair, activé via <html data-theme="light">. */
-:root[data-theme="light"] {
-  --fond: #f5f6f9;
-  --fond-eleve: #ffffff;
-  --fond-eleve-2: #eef0f6;
-  --bordure: #d9dde8;
-  --bordure-forte: #bcc3d4;
-  --texte: #171a21;
-  --texte-doux: #545c70;         /* contraste ≈ 7:1 sur --fond-eleve */
-  --texte-tres-doux: #6c7488;
-  --accent: #2f5bd7;
-  --accent-fort: #22439f;
-  --accent-contraste: #ffffff;
-  --danger: #b3261e;
-  --danger-fond: #fbe9e7;
-  --succes: #1a7f4b;
-  --alerte: #8a5a00;
-  --ombre: 0 8px 24px rgba(20, 25, 40, .12);
+/* Déclinaison sombre de la même palette : le rose reste la couleur d'accent,
+   posé sur des fonds prune plutôt que sur du blanc. */
+:root[data-theme="dark"] {
+  --fond: #1a1016;
+  --fond-eleve: #241820;
+  --fond-eleve-2: #2f2029;
+  --bordure: #4a2f3e;
+  --bordure-forte: #6b4356;
+  --texte: #ffeaf3;
+  --texte-doux: #d9a8bf;          /* contraste ≈ 8:1 sur --fond-eleve */
+  --texte-tres-doux: #bd8ba3;     /* contraste ≈ 5,7:1 sur --fond-eleve */
+  --accent: #ff85b3;
+  --accent-fort: #ffa8c9;
+  --accent-contraste: #2a1119;    /* texte sombre posé sur le rose */
+  --danger: #ff8fa3;
+  --danger-fond: #43202a;
+  --succes: #7fd9b0;
+  --alerte: #ffcf5c;
+  --info: #8ecae6;
+  --halo-1: rgba(255, 133, 179, .16);
+  --halo-2: rgba(160, 130, 255, .14);
+  --ombre: 0 6px 18px rgba(0, 0, 0, .45);
 }
 
 /* ============ 2. BASE ET UTILITAIRES ============ */
@@ -64,11 +88,20 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--fond);
+  /* Les deux halos diagonaux du Budget Planner : rose en haut à droite,
+     parme en bas à gauche, fixés pour ne pas défiler avec le contenu. */
+  background:
+    radial-gradient(1200px 600px at 100% -10%, var(--halo-1) 0%, transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, var(--halo-2) 0%, transparent 55%),
+    var(--fond);
+  background-attachment: fixed;
   color: var(--texte);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Pile de polices identique à celle des deux autres apps. */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Comic Sans MS",
+               "Quicksand", Roboto, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -90,7 +123,7 @@ code {
 
 /* Anneau de focus visible et homogène : indispensable pour la navigation clavier. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-fort);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -110,7 +143,7 @@ code {
   left: -9999px;
   top: 0;
   z-index: 100;
-  background: var(--accent);
+  background: var(--accent-fort);
   color: var(--accent-contraste);
   padding: .6rem 1rem;
   border-radius: 0 0 var(--rayon-sm) 0;
@@ -123,11 +156,17 @@ code {
   padding: 1.25rem 1rem 3rem;
 }
 
-.titre-section { font-size: 1.05rem; letter-spacing: .01em; }
+.titre-section {
+  font-size: 1.05rem;
+  letter-spacing: .01em;
+  color: var(--accent-fort);
+  font-weight: 800;
+}
 .titre-sous-section {
   font-size: .95rem;
   margin: 1.25rem 0 .5rem;
-  color: var(--texte);
+  color: var(--accent-fort);
+  font-weight: 800;
 }
 .titre-sous-section--danger { color: var(--danger); }
 .note-section, .aide {
@@ -141,7 +180,7 @@ code {
 /* --- Contrôles de formulaire --- */
 .input, .select {
   width: 100%;
-  background: var(--fond);
+  background: var(--fond-eleve-2);
   color: var(--texte);
   border: 1px solid var(--bordure);
   border-radius: var(--rayon-sm);
@@ -203,12 +242,12 @@ textarea.input { resize: vertical; min-height: 70px; }
 }
 .btn:hover { border-color: var(--bordure-forte); background: var(--fond-eleve); }
 .btn--principal {
-  background: var(--accent);
+  background: var(--accent-fort);
   color: var(--accent-contraste);
-  border-color: var(--accent);
+  border-color: var(--accent-fort);
   font-weight: 600;
 }
-.btn--principal:hover { background: var(--accent-fort); border-color: var(--accent-fort); }
+.btn--principal:hover { filter: brightness(.92); }
 .btn--fantome { background: transparent; }
 .btn--danger { background: var(--danger-fond); color: var(--danger); border-color: var(--danger); }
 .btn--danger:hover { background: var(--danger); color: var(--accent-contraste); }
@@ -219,9 +258,9 @@ textarea.input { resize: vertical; min-height: 70px; }
 .groupe-vue .btn:first-child { border-radius: var(--rayon-sm) 0 0 var(--rayon-sm); }
 .groupe-vue .btn:last-child { border-radius: 0 var(--rayon-sm) var(--rayon-sm) 0; margin-left: -1px; }
 .btn[aria-pressed="true"] {
-  background: var(--accent);
+  background: var(--accent-fort);
   color: var(--accent-contraste);
-  border-color: var(--accent);
+  border-color: var(--accent-fort);
   font-weight: 600;
 }
 
@@ -264,13 +303,9 @@ textarea.input { resize: vertical; min-height: 70px; }
 .entete__actions .select { width: auto; min-width: 150px; }
 
 /* ============ 4. TABLEAU DE BORD ============ */
-.dashboard {
-  background: var(--fond-eleve);
-  border: 1px solid var(--bordure);
-  border-radius: var(--rayon);
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
+/* Pas de grande carte englobante : les tuiles flottent sur le dégradé,
+   comme la summary-grid du Budget Planner. */
+.dashboard { margin-bottom: 1.5rem; }
 .kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -278,10 +313,11 @@ textarea.input { resize: vertical; min-height: 70px; }
   margin-top: .9rem;
 }
 .kpi {
-  background: var(--fond-eleve-2);
-  border: 1px solid var(--bordure);
-  border-radius: var(--rayon-sm);
-  padding: .7rem .8rem;
+  background: var(--fond-eleve);
+  border: 2px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  padding: .85rem .9rem;
   display: flex;
   flex-direction: column;
   gap: .15rem;
@@ -290,7 +326,15 @@ textarea.input { resize: vertical; min-height: 70px; }
 .kpi__valeur { font-size: 1.35rem; font-weight: 700; word-break: break-word; }
 .kpi__detail { font-size: .76rem; color: var(--texte-tres-doux); }
 
-.repartition { margin-top: 1rem; }
+.repartition {
+  margin-top: 1rem;
+  background: var(--fond-eleve);
+  border: 2px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  padding: 1rem;
+}
+.repartition .titre-sous-section { margin-top: 0; }
 .repartition__devise { font-size: .8rem; color: var(--texte-doux); margin: .7rem 0 .35rem; }
 .barre-ligne { margin-bottom: .55rem; }
 .barre-ligne__entete {
@@ -302,25 +346,26 @@ textarea.input { resize: vertical; min-height: 70px; }
 }
 .barre-ligne__montant { color: var(--texte-doux); white-space: nowrap; }
 .barre-piste {
-  background: var(--fond-eleve-2);
+  background: var(--bordure);
   border-radius: 999px;
-  height: 9px;
+  height: 10px;
   overflow: hidden;
 }
 .barre-valeur {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-fort));
+  background: var(--accent);
   border-radius: 999px;
-  transition: width 250ms ease;
+  transition: width 300ms ease;
 }
 
 /* ============ 5. BARRE D'OUTILS ET FILTRES ============ */
 .barre-outils {
   background: var(--fond-eleve);
-  border: 1px solid var(--bordure);
+  border: 2px solid var(--bordure);
   border-radius: var(--rayon);
+  box-shadow: var(--ombre);
   padding: .85rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 .barre-outils__ligne {
   display: flex;
@@ -351,7 +396,7 @@ textarea.input { resize: vertical; min-height: 70px; }
   margin-top: .8rem;
 }
 .pastille {
-  background: var(--accent);
+  background: var(--accent-fort);
   color: var(--accent-contraste);
   border-radius: 999px;
   padding: 0 .45rem;
@@ -379,14 +424,15 @@ textarea.input { resize: vertical; min-height: 70px; }
 }
 .carte {
   background: var(--fond-eleve);
-  border: 1px solid var(--bordure);
+  border: 2px solid var(--bordure);
   border-radius: var(--rayon);
+  box-shadow: var(--ombre);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: border-color var(--transition), transform var(--transition);
 }
-.carte:hover { border-color: var(--bordure-forte); transform: translateY(-2px); }
+.carte:hover { border-color: var(--accent); transform: translateY(-2px); }
 .carte__image {
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -425,15 +471,16 @@ textarea.input { resize: vertical; min-height: 70px; }
 .etiquette--basse   { border-color: var(--bordure-forte); color: var(--texte-doux); }
 .etiquette--achete  { border-color: var(--succes); color: var(--succes); }
 .etiquette--abandonne { opacity: .7; text-decoration: line-through; }
-.etiquette--accent  { border-color: var(--accent); color: var(--accent); }
+.etiquette--accent  { border-color: var(--accent); color: var(--accent-fort); }
 
 .carte--abandonne { opacity: .62; }
 
 /* --- Vue liste (tableau responsive) --- */
 .table-enveloppe {
   overflow-x: auto;
-  border: 1px solid var(--bordure);
+  border: 2px solid var(--bordure);
   border-radius: var(--rayon);
+  box-shadow: var(--ombre);
   background: var(--fond-eleve);
 }
 .table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 760px; }
@@ -457,11 +504,11 @@ textarea.input { resize: vertical; min-height: 70px; }
 /* ============ 7. MODALES ============ */
 .modale { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
 .modale[hidden] { display: none; }
-.modale__fond { position: absolute; inset: 0; background: rgba(3, 5, 10, .65); }
+.modale__fond { position: absolute; inset: 0; background: rgba(74, 32, 52, .45); }
 .modale__boite {
   position: relative;
   background: var(--fond-eleve);
-  border: 1px solid var(--bordure);
+  border: 2px solid var(--bordure);
   border-radius: var(--rayon);
   box-shadow: var(--ombre);
   width: min(760px, 100%);
@@ -534,6 +581,7 @@ textarea.input { resize: vertical; min-height: 70px; }
   box-shadow: var(--ombre);
   animation: apparition 180ms ease;
 }
+.toast { border-left-color: var(--accent-fort); }
 .toast--succes { border-left-color: var(--succes); }
 .toast--erreur { border-left-color: var(--danger); }
 @keyframes apparition { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

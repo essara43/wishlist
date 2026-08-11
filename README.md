@@ -4,7 +4,8 @@ Gestionnaire de listes d'envies **100 % local** : HTML, CSS et JavaScript vanill
 sans framework, sans build, sans dépendance externe. Vos données restent dans le
 `localStorage` de votre navigateur et ne sont **jamais** envoyées vers un serveur.
 
-Thème sombre par défaut, thème clair au choix, utilisable sur mobile comme sur desktop.
+Thème rose pastel partagé avec **Budget Planner** et **Goal Planner**, décliné en
+clair (par défaut) et en sombre, utilisable sur mobile comme sur desktop.
 
 ---
 
@@ -139,6 +140,24 @@ Dans **Données** :
 - **Réinitialiser toutes les données** — efface tout et repart d'une installation
   vierge. Pensez à exporter d'abord.
 
+### Thème
+
+L'application reprend la palette du Budget Planner (`essara43/budget`), déjà
+réutilisée par le Goal Planner (`essara43/Goal-Planner`) : fond `#fff0f6`, cartes
+blanches à bordure rose `#ffd3e6` de 2 px, rayon 18 px, ombre rose diffuse, halos
+radiaux rose et parme en arrière-plan, et la même pile de polices.
+
+Deux corrections de lisibilité, déjà actées par le Goal Planner, sont reprises ici :
+le gris-rose `#c087a4` (2,6:1 sur le fond) est remplacé par une déclinaison plus
+soutenue, et les aplats pleins portant du texte blanc utilisent `#c92f70` plutôt
+que le rose `#ff85b3`, qui ne porte que 2,3:1. Le rose d'origine reste employé
+partout où il ne sert pas de fond à du texte : bordures actives, barres du
+tableau de bord, halos.
+
+Le bouton 🌙 / ☀️ de l'en-tête bascule vers une déclinaison sombre de la même
+palette — le rose reste la couleur d'accent, posé sur des fonds prune. Le choix
+est conservé dans les réglages. Les deux thèmes respectent le niveau AA.
+
 ### Accessibilité
 
 Tous les champs ont un `label`, les modales sont des `dialog` avec piège de focus
@@ -192,7 +211,7 @@ conversion dans `store.migrer()`, prévue à cet effet.
   "version": 1,
   "updatedAt": "2026-08-11T09:20:00.000Z",
   "settings": {
-    "theme": "dark",              // "dark" | "light"
+    "theme": "light",             // "light" (défaut) | "dark"
     "view": "cards",              // "cards" | "list"
     "defaultCurrency": "EUR",     // devise proposée par défaut au formulaire
     "activeListId": "lst_abc123",
