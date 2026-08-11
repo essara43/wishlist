@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Wishlist Manager</title>
+  <meta name="description" content="Gestionnaire de listes d'envies 100 % local : aucune donnée n'est envoyée vers un serveur.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🎁</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Lien d'évitement pour la navigation au clavier -->
+  <a class="lien-evitement" href="#contenu">Aller au contenu principal</a>
+
+  <!-- ==================== EN-TÊTE ==================== -->
+  <header class="entete">
+    <div class="entete__interieur">
+      <h1 class="entete__titre"><span aria-hidden="true">🎁</span> Wishlist Manager</h1>
+
+      <div class="entete__actions">
+        <!-- Sélecteur de wishlist active -->
+        <div class="champ-inline">
+          <label class="etiquette-inline" for="select-liste">Wishlist</label>
+          <select id="select-liste" class="select"></select>
+        </div>
+
+        <button type="button" class="btn btn--fantome" id="btn-gerer-listes"
+                aria-label="Gérer les wishlists">Listes</button>
+        <button type="button" class="btn btn--fantome" id="btn-gerer-categories"
+                aria-label="Gérer les catégories">Catégories</button>
+        <button type="button" class="btn btn--fantome" id="btn-donnees"
+                aria-label="Import, export et réinitialisation des données">Données</button>
+        <button type="button" class="btn btn--fantome btn--icone" id="btn-theme"
+                aria-label="Basculer entre le thème clair et le thème sombre" aria-pressed="false">
+          <span id="btn-theme-icone" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Bandeau d'alerte affiché si localStorage est indisponible -->
+  <p id="bandeau-stockage" class="bandeau bandeau--alerte" hidden role="status"></p>
+
+  <main id="contenu" class="conteneur">
+
+    <!-- ==================== TABLEAU DE BORD ==================== -->
+    <section class="dashboard" aria-labelledby="titre-dashboard">
+      <h2 id="titre-dashboard" class="titre-section">Tableau de bord</h2>
+      <p class="note-section">Calculé sur la liste active, filtres appliqués. Les devises ne sont jamais converties&nbsp;: chaque total est affiché dans sa propre devise.</p>
+
+      <div class="kpis">
+        <div class="kpi">
+          <span class="kpi__libelle">Articles affichés</span>
+          <strong class="kpi__valeur" id="kpi-nombre">0</strong>
+          <span class="kpi__detail" id="kpi-nombre-detail"></span>
+        </div>
+        <div class="kpi">
+          <span class="kpi__libelle">Budget estimé restant</span>
+          <strong class="kpi__valeur" id="kpi-budget">—</strong>
+          <span class="kpi__detail">Statuts « À acheter » et « En attente »</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi__libelle">Déjà dépensé</span>
+          <strong class="kpi__valeur" id="kpi-depense">—</strong>
+          <span class="kpi__detail" id="kpi-depense-detail">Articles achetés</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi__libelle">Panier moyen estimé</span>
+          <strong class="kpi__valeur" id="kpi-moyenne">—</strong>
+          <span class="kpi__detail">Par article restant à acheter</span>
+        </div>
+      </div>
+
+      <div class="repartition" id="repartition">
+        <h3 class="titre-sous-section">Répartition du montant estimé par catégorie</h3>
+        <div id="repartition-contenu"></div>
+      </div>
+    </section>
+
+    <!-- ==================== BARRE D'OUTILS ==================== -->
+    <section class="barre-outils" aria-labelledby="titre-outils">
+      <h2 id="titre-outils" class="sr-only">Recherche, filtres et tri</h2>
+
+      <div class="barre-outils__ligne">
+        <div class="champ-recherche">
+          <label for="recherche" class="sr-only">Rechercher un article</label>
+          <input type="search" id="recherche" class="input" placeholder="Rechercher (nom, magasin, notes…)"
+                 autocomplete="off">
+        </div>
+
+        <div class="champ-inline">
+          <label class="etiquette-inline" for="tri">Trier par</label>
+          <select id="tri" class="select">
+            <option value="date-desc">Ajout : plus récent</option>
+            <option value="date-asc">Ajout : plus ancien</option>
+            <option value="prix-asc">Prix croissant</option>
+            <option value="prix-desc">Prix décroissant</option>
+            <option value="priorite">Priorité</option>
+            <option value="nom-asc">Nom A → Z</option>
+          </select>
+        </div>
+
+        <div class="groupe-vue" role="group" aria-label="Mode d'affichage">
+          <button type="button" class="btn btn--segment" id="btn-vue-cartes" aria-pressed="true">Cartes</button>
+          <button type="button" class="btn btn--segment" id="btn-vue-liste" aria-pressed="false">Liste</button>
+        </div>
+
+        <button type="button" class="btn btn--principal" id="btn-nouvel-article">+ Nouvel article</button>
+      </div>
+
+      <details class="filtres" id="filtres">
+        <summary class="filtres__resume">
+          Filtres <span class="pastille" id="pastille-filtres" hidden>0</span>
+        </summary>
+        <div class="filtres__grille">
+          <div class="champ">
+            <label for="filtre-categorie">Catégorie</label>
+            <select id="filtre-categorie" class="select"><option value="">Toutes</option></select>
+          </div>
+          <div class="champ">
+            <label for="filtre-statut">Statut</label>
+            <select id="filtre-statut" class="select"><option value="">Tous</option></select>
+          </div>
+          <div class="champ">
+            <label for="filtre-priorite">Priorité</label>
+            <select id="filtre-priorite" class="select"><option value="">Toutes</option></select>
+          </div>
+          <div class="champ">
+            <label for="filtre-occasion">Occasion</label>
+            <select id="filtre-occasion" class="select"><option value="">Toutes</option></select>
+          </div>
+          <div class="champ">
+            <label for="filtre-prix-min">Prix min.</label>
+            <input type="text" id="filtre-prix-min" class="input" inputmode="decimal" autocomplete="off" placeholder="0">
+          </div>
+          <div class="champ">
+            <label for="filtre-prix-max">Prix max.</label>
+            <input type="text" id="filtre-prix-max" class="input" inputmode="decimal" autocomplete="off" placeholder="∞">
+          </div>
+          <div class="champ champ--bouton">
+            <button type="button" class="btn btn--fantome" id="btn-reinit-filtres">Réinitialiser les filtres</button>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- ==================== ARTICLES ==================== -->
+    <section aria-labelledby="titre-articles">
+      <h2 id="titre-articles" class="sr-only">Articles</h2>
+      <p class="resume-resultats" id="resume-resultats" role="status"></p>
+      <div id="zone-articles"></div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>Wishlist Manager — 100 % local, aucune donnée n'est envoyée vers un serveur.
+       Vos articles sont stockés dans le <code>localStorage</code> de ce navigateur.</p>
+  </footer>
+
+  <!-- ==================== MODALE : ARTICLE ==================== -->
+  <div class="modale" id="modale-article" hidden>
+    <div class="modale__fond" data-fermer-modale></div>
+    <div class="modale__boite" role="dialog" aria-modal="true" aria-labelledby="titre-modale-article">
+      <header class="modale__entete">
+        <h2 id="titre-modale-article">Nouvel article</h2>
+        <button type="button" class="btn btn--icone" data-fermer-modale aria-label="Fermer">✕</button>
+      </header>
+
+      <form id="form-article" novalidate>
+        <div class="modale__corps">
+          <div class="grille-form">
+            <div class="champ champ--large">
+              <label for="f-nom">Nom de l'article <span class="requis" aria-hidden="true">*</span></label>
+              <input type="text" id="f-nom" class="input" required aria-describedby="err-nom" maxlength="120">
+              <p class="erreur" id="err-nom" hidden></p>
+            </div>
+
+            <div class="champ">
+              <label for="f-categorie">Catégorie</label>
+              <select id="f-categorie" class="select"></select>
+            </div>
+
+            <div class="champ">
+              <label for="f-sous-categorie">Sous-catégorie <span class="option">(optionnel)</span></label>
+              <input type="text" id="f-sous-categorie" class="input" maxlength="80">
+            </div>
+
+            <div class="champ">
+              <label for="f-prix">Prix estimé</label>
+              <input type="text" id="f-prix" class="input" inputmode="decimal" autocomplete="off"
+                     placeholder="0,00" aria-describedby="err-prix">
+              <p class="erreur" id="err-prix" hidden></p>
+            </div>
+
+            <div class="champ">
+              <label for="f-devise">Devise</label>
+              <select id="f-devise" class="select"></select>
+            </div>
+
+            <div class="champ">
+              <label for="f-magasin">Magasin ou site</label>
+              <input type="text" id="f-magasin" class="input" maxlength="120">
+            </div>
+
+            <div class="champ">
+              <label for="f-url">URL du produit <span class="option">(optionnel)</span></label>
+              <input type="url" id="f-url" class="input" placeholder="https://…" aria-describedby="err-url">
+              <p class="erreur" id="err-url" hidden></p>
+            </div>
+
+            <div class="champ">
+              <label for="f-image">URL de l'image <span class="option">(optionnel)</span></label>
+              <input type="url" id="f-image" class="input" placeholder="https://…" aria-describedby="err-image">
+              <p class="erreur" id="err-image" hidden></p>
+            </div>
+
+            <div class="champ">
+              <label for="f-occasion">Occasion <span class="option">(optionnel)</span></label>
+              <input type="text" id="f-occasion" class="input" list="liste-occasions" maxlength="60"
+                     placeholder="Anniversaire, déménagement, hiver…">
+              <datalist id="liste-occasions"></datalist>
+            </div>
+
+            <div class="champ">
+              <label for="f-priorite">Priorité</label>
+              <select id="f-priorite" class="select"></select>
+            </div>
+
+            <div class="champ">
+              <label for="f-statut">Statut</label>
+              <select id="f-statut" class="select"></select>
+            </div>
+
+            <div class="champ" id="bloc-date-achat" hidden>
+              <label for="f-date-achat">Date d'achat</label>
+              <input type="date" id="f-date-achat" class="input" aria-describedby="err-date-achat">
+              <p class="erreur" id="err-date-achat" hidden></p>
+            </div>
+
+            <div class="champ" id="bloc-prix-paye" hidden>
+              <label for="f-prix-paye">Prix réellement payé</label>
+              <input type="text" id="f-prix-paye" class="input" inputmode="decimal" autocomplete="off"
+                     placeholder="0,00" aria-describedby="err-prix-paye aide-prix-paye">
+              <p class="aide" id="aide-prix-paye">Si vide, le prix estimé est utilisé dans le total dépensé.</p>
+              <p class="erreur" id="err-prix-paye" hidden></p>
+            </div>
+
+            <div class="champ champ--large">
+              <label for="f-variantes">Taille / couleur / référence <span class="option">(optionnel)</span></label>
+              <input type="text" id="f-variantes" class="input" maxlength="160">
+            </div>
+
+            <div class="champ champ--large">
+              <label for="f-notes">Notes libres</label>
+              <textarea id="f-notes" class="input" rows="3" maxlength="1000"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <footer class="modale__pied">
+          <button type="button" class="btn btn--fantome" data-fermer-modale>Annuler</button>
+          <button type="submit" class="btn btn--principal" id="btn-enregistrer-article">Enregistrer</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODALE : WISHLISTS ==================== -->
+  <div class="modale" id="modale-listes" hidden>
+    <div class="modale__fond" data-fermer-modale></div>
+    <div class="modale__boite modale__boite--etroite" role="dialog" aria-modal="true" aria-labelledby="titre-modale-listes">
+      <header class="modale__entete">
+        <h2 id="titre-modale-listes">Gérer les wishlists</h2>
+        <button type="button" class="btn btn--icone" data-fermer-modale aria-label="Fermer">✕</button>
+      </header>
+      <div class="modale__corps">
+        <ul class="liste-gestion" id="liste-wishlists"></ul>
+        <form class="form-ajout" id="form-ajout-liste">
+          <div class="champ">
+            <label for="f-nouvelle-liste">Nouvelle wishlist</label>
+            <input type="text" id="f-nouvelle-liste" class="input" maxlength="60" placeholder="Ex. : Cadeaux Noël">
+          </div>
+          <button type="submit" class="btn btn--principal">Ajouter</button>
+        </form>
+      </div>
+      <footer class="modale__pied">
+        <button type="button" class="btn btn--fantome" data-fermer-modale>Fermer</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ==================== MODALE : CATÉGORIES ==================== -->
+  <div class="modale" id="modale-categories" hidden>
+    <div class="modale__fond" data-fermer-modale></div>
+    <div class="modale__boite modale__boite--etroite" role="dialog" aria-modal="true" aria-labelledby="titre-modale-categories">
+      <header class="modale__entete">
+        <h2 id="titre-modale-categories">Gérer les catégories</h2>
+        <button type="button" class="btn btn--icone" data-fermer-modale aria-label="Fermer">✕</button>
+      </header>
+      <div class="modale__corps">
+        <p class="aide">À la suppression d'une catégorie, ses articles sont replacés dans « Autre ».</p>
+        <ul class="liste-gestion" id="liste-categories"></ul>
+        <form class="form-ajout" id="form-ajout-categorie">
+          <div class="champ">
+            <label for="f-nouvelle-categorie">Nouvelle catégorie</label>
+            <input type="text" id="f-nouvelle-categorie" class="input" maxlength="60" placeholder="Ex. : Jardin">
+          </div>
+          <button type="submit" class="btn btn--principal">Ajouter</button>
+        </form>
+      </div>
+      <footer class="modale__pied">
+        <button type="button" class="btn btn--fantome" data-fermer-modale>Fermer</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ==================== MODALE : DONNÉES ==================== -->
+  <div class="modale" id="modale-donnees" hidden>
+    <div class="modale__fond" data-fermer-modale></div>
+    <div class="modale__boite modale__boite--etroite" role="dialog" aria-modal="true" aria-labelledby="titre-modale-donnees">
+      <header class="modale__entete">
+        <h2 id="titre-modale-donnees">Données</h2>
+        <button type="button" class="btn btn--icone" data-fermer-modale aria-label="Fermer">✕</button>
+      </header>
+      <div class="modale__corps">
+        <h3 class="titre-sous-section">Exporter</h3>
+        <div class="rangee-boutons">
+          <button type="button" class="btn" id="btn-export-json">Export JSON (tout)</button>
+          <button type="button" class="btn" id="btn-export-csv">Export CSV (liste courante)</button>
+        </div>
+
+        <h3 class="titre-sous-section">Importer un fichier JSON</h3>
+        <fieldset class="fieldset">
+          <legend>Mode d'import</legend>
+          <label class="radio"><input type="radio" name="mode-import" value="fusion" checked> Fusionner avec les données existantes</label>
+          <label class="radio"><input type="radio" name="mode-import" value="remplacement"> Remplacer toutes les données</label>
+        </fieldset>
+        <div class="champ">
+          <label for="f-fichier-import">Fichier .json</label>
+          <input type="file" id="f-fichier-import" class="input" accept="application/json,.json">
+        </div>
+        <p class="erreur" id="err-import" hidden></p>
+
+        <h3 class="titre-sous-section">Données de démonstration</h3>
+        <div class="rangee-boutons">
+          <button type="button" class="btn" id="btn-charger-demo">Charger la démo</button>
+          <button type="button" class="btn" id="btn-effacer-demo">Effacer les données de démo</button>
+        </div>
+
+        <h3 class="titre-sous-section titre-sous-section--danger">Zone sensible</h3>
+        <div class="rangee-boutons">
+          <button type="button" class="btn btn--danger" id="btn-reset-total">Réinitialiser toutes les données</button>
+        </div>
+        <p class="aide" id="info-stockage"></p>
+      </div>
+      <footer class="modale__pied">
+        <button type="button" class="btn btn--fantome" data-fermer-modale>Fermer</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ==================== MODALE : CONFIRMATION ==================== -->
+  <div class="modale" id="modale-confirmation" hidden>
+    <div class="modale__fond" data-fermer-modale></div>
+    <div class="modale__boite modale__boite--etroite" role="alertdialog" aria-modal="true"
+         aria-labelledby="titre-modale-confirmation" aria-describedby="texte-confirmation">
+      <header class="modale__entete">
+        <h2 id="titre-modale-confirmation">Confirmation</h2>
+        <button type="button" class="btn btn--icone" data-fermer-modale aria-label="Fermer">✕</button>
+      </header>
+      <div class="modale__corps">
+        <p id="texte-confirmation"></p>
+      </div>
+      <footer class="modale__pied">
+        <button type="button" class="btn btn--fantome" id="btn-annuler-confirmation">Annuler</button>
+        <button type="button" class="btn btn--danger" id="btn-valider-confirmation">Confirmer</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Zone des notifications éphémères -->
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <!-- Scripts classiques (pas de modules ES) : fonctionne aussi en ouvrant le fichier en local -->
+  <script src="js/model.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/io.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
