@@ -14,70 +14,64 @@
 
 /* ============ 1. JETONS DE THÈME ============ */
 /*
- * Palette partagée avec Budget Planner (essara43/budget) et Goal Planner
- * (essara43/Goal-Planner). Tokens d'origine du Budget Planner :
- *   --bg #fff0f6  --bg-elev #ffffff  --bg-elev-2 #fff2f8  --border #ffd3e6
- *   --text #6d4257  --text-dim #c087a4  --accent #ff85b3  --accent-dim #ffc2da
- *   --red #ff6f91  --yellow #ffcf5c  --blue #8ecae6
- *   --radius 18px  --shadow 0 6px 18px rgba(255,133,179,.18)
+ * Palette « earthy terracotta » : terre cuite, argile et sable.
+ * La géométrie reste celle des apps Budget Planner et Goal Planner — cartes à
+ * bordure 2 px, rayon 18 px, ombre diffuse, halos radiaux — seules les
+ * couleurs changent.
  *
- * On reprend les corrections de lisibilité déjà actées par le Goal Planner :
- *   - le gris-rose #c087a4 ne porte que 2,6:1 sur le fond, remplacé par #9c5c7c ;
- *   - le rose #ff85b3 avec du texte blanc ne porte que 2,3:1, donc les aplats
- *     pleins (boutons, étiquettes) utilisent --accent-fort #c92f70.
- * Le rose d'origine reste employé partout où il ne sert pas de fond à du texte :
- *   bordures actives, barres du tableau de bord, halos.
+ * Règle de contraste : --accent est décoratif (barres, bordures, halos) et ne
+ * sert jamais de fond à du texte ; tout aplat portant du texte utilise
+ * --accent-fort. Toutes les couleurs de texte sont au niveau AA sur les trois
+ * fonds de leur thème.
  *
- * Le thème clair est la valeur par défaut, comme dans les deux autres apps.
+ * Le thème clair est la valeur par défaut.
  */
 :root,
 :root[data-theme="light"] {
-  --fond: #fff0f6;
-  --fond-eleve: #ffffff;
-  --fond-eleve-2: #fff2f8;
-  --bordure: #ffd3e6;
-  --bordure-forte: #ffc2da;
-  --texte: #6d4257;
-  --texte-doux: #8a4f6d;          /* 5,6:1 sur le fond rose — le #9c5c7c du
-                                     Goal Planner y tombe pile à 4,50:1 */
-  --texte-tres-doux: #96567a;     /* 4,9:1 : second niveau, toujours AA */
-  --accent: #ff85b3;              /* décoratif uniquement, jamais sous du texte */
-  --accent-fort: #c92f70;         /* aplats pleins et texte d'accent */
-  --accent-contraste: #ffffff;
-  --danger: #b3143c;
-  --danger-fond: #ffe3ea;
-  --succes: #17694a;
-  --alerte: #8a5a00;
-  --info: #14607f;
-  --halo-1: #ffe0ef;              /* halo rose, en haut à droite */
-  --halo-2: #e9dcff;              /* halo parme, en bas à gauche */
-  --ombre: 0 6px 18px rgba(255, 133, 179, .18);
+  --fond: #f6f0e8;                /* sable */
+  --fond-eleve: #fffcf7;          /* ivoire — cartes */
+  --fond-eleve-2: #f1e8dc;        /* sable soutenu — champs de saisie */
+  --bordure: #e6d7c6;             /* argile claire */
+  --bordure-forte: #d3bda6;
+  --texte: #40342b;               /* terre d'ombre — 9,9:1 */
+  --texte-doux: #67543f;          /* 5,9:1 */
+  --texte-tres-doux: #786450;     /* 4,6:1 */
+  --accent: #b5714a;              /* terracotta — décoratif uniquement */
+  --accent-fort: #8a4a2b;         /* brique — aplats pleins et texte d'accent */
+  --accent-contraste: #fffcf7;
+  --danger: #9c2318;              /* rouge franc, distinct de la brique */
+  --danger-fond: #f7e4de;
+  --succes: #476236;              /* mousse */
+  --alerte: #7d5200;              /* ocre */
+  --info: #2f5c6b;
+  --halo-1: #f0e0cc;              /* halo sable, en haut à droite */
+  --halo-2: #e7e3d1;              /* halo olive pâle, en bas à gauche */
+  --ombre: 0 6px 18px rgba(122, 84, 56, .13);
   --rayon: 18px;
   --rayon-sm: 8px;
   --transition: 140ms ease;
 }
 
-/* Déclinaison sombre de la même palette : le rose reste la couleur d'accent,
-   posé sur des fonds prune plutôt que sur du blanc. */
+/* Déclinaison sombre : mêmes terres, en version nocturne. */
 :root[data-theme="dark"] {
-  --fond: #1a1016;
-  --fond-eleve: #241820;
-  --fond-eleve-2: #2f2029;
-  --bordure: #4a2f3e;
-  --bordure-forte: #6b4356;
-  --texte: #ffeaf3;
-  --texte-doux: #d9a8bf;          /* contraste ≈ 8:1 sur --fond-eleve */
-  --texte-tres-doux: #bd8ba3;     /* contraste ≈ 5,7:1 sur --fond-eleve */
-  --accent: #ff85b3;
-  --accent-fort: #ffa8c9;
-  --accent-contraste: #2a1119;    /* texte sombre posé sur le rose */
-  --danger: #ff8fa3;
-  --danger-fond: #43202a;
-  --succes: #7fd9b0;
-  --alerte: #ffcf5c;
-  --info: #8ecae6;
-  --halo-1: rgba(255, 133, 179, .16);
-  --halo-2: rgba(160, 130, 255, .14);
+  --fond: #1c1815;
+  --fond-eleve: #26211c;
+  --fond-eleve-2: #302a23;
+  --bordure: #453b31;
+  --bordure-forte: #5e5044;
+  --texte: #f5ece1;               /* 12,1:1 */
+  --texte-doux: #c9b6a2;          /* 7,2:1 */
+  --texte-tres-doux: #ac9884;     /* 5,1:1 */
+  --accent: #d08a5e;
+  --accent-fort: #e5a276;
+  --accent-contraste: #241a13;    /* texte sombre posé sur la terre cuite */
+  --danger: #ef8f7c;
+  --danger-fond: #3d221c;
+  --succes: #9ec98a;
+  --alerte: #e3b95c;
+  --info: #8ec2d6;
+  --halo-1: rgba(181, 113, 74, .15);
+  --halo-2: rgba(150, 140, 95, .10);
   --ombre: 0 6px 18px rgba(0, 0, 0, .45);
 }
 
@@ -88,15 +82,15 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  /* Les deux halos diagonaux du Budget Planner : rose en haut à droite,
-     parme en bas à gauche, fixés pour ne pas défiler avec le contenu. */
+  /* Deux halos diagonaux : sable en haut à droite, olive pâle en bas à
+     gauche, fixés pour ne pas défiler avec le contenu. */
   background:
     radial-gradient(1200px 600px at 100% -10%, var(--halo-1) 0%, transparent 60%),
     radial-gradient(900px 500px at -10% 110%, var(--halo-2) 0%, transparent 55%),
     var(--fond);
   background-attachment: fixed;
   color: var(--texte);
-  /* Pile de polices identique à celle des deux autres apps. */
+  /* Pile de polices commune aux trois apps. */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Comic Sans MS",
                "Quicksand", Roboto, Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -303,8 +297,7 @@ textarea.input { resize: vertical; min-height: 70px; }
 .entete__actions .select { width: auto; min-width: 150px; }
 
 /* ============ 4. TABLEAU DE BORD ============ */
-/* Pas de grande carte englobante : les tuiles flottent sur le dégradé,
-   comme la summary-grid du Budget Planner. */
+/* Pas de grande carte englobante : les tuiles flottent sur le dégradé. */
 .dashboard { margin-bottom: 1.5rem; }
 .kpis {
   display: grid;
@@ -504,7 +497,7 @@ textarea.input { resize: vertical; min-height: 70px; }
 /* ============ 7. MODALES ============ */
 .modale { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
 .modale[hidden] { display: none; }
-.modale__fond { position: absolute; inset: 0; background: rgba(74, 32, 52, .45); }
+.modale__fond { position: absolute; inset: 0; background: rgba(40, 30, 22, .5); }
 .modale__boite {
   position: relative;
   background: var(--fond-eleve);

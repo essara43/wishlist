@@ -4,8 +4,8 @@ Gestionnaire de listes d'envies **100 % local** : HTML, CSS et JavaScript vanill
 sans framework, sans build, sans dépendance externe. Vos données restent dans le
 `localStorage` de votre navigateur et ne sont **jamais** envoyées vers un serveur.
 
-Thème rose pastel partagé avec **Budget Planner** et **Goal Planner**, décliné en
-clair (par défaut) et en sombre, utilisable sur mobile comme sur desktop.
+Thème « earthy terracotta » — terre cuite, argile et sable — décliné en clair
+(par défaut) et en sombre, utilisable sur mobile comme sur desktop.
 
 ---
 
@@ -181,21 +181,26 @@ transférer.
 
 ### Thème
 
-L'application reprend la palette du Budget Planner (`essara43/budget`), déjà
-réutilisée par le Goal Planner (`essara43/Goal-Planner`) : fond `#fff0f6`, cartes
-blanches à bordure rose `#ffd3e6` de 2 px, rayon 18 px, ombre rose diffuse, halos
-radiaux rose et parme en arrière-plan, et la même pile de polices.
+Palette **earthy terracotta** : fond sable `#f6f0e8`, cartes ivoire `#fffcf7`
+bordées d'argile claire `#e6d7c6` sur 2 px, rayon 18 px, ombre chaude diffuse,
+et deux halos radiaux — sable en haut à droite, olive pâle en bas à gauche.
+L'accent est la terre cuite `#b5714a`.
 
-Deux corrections de lisibilité, déjà actées par le Goal Planner, sont reprises ici :
-le gris-rose `#c087a4` (2,6:1 sur le fond) est remplacé par une déclinaison plus
-soutenue, et les aplats pleins portant du texte blanc utilisent `#c92f70` plutôt
-que le rose `#ff85b3`, qui ne porte que 2,3:1. Le rose d'origine reste employé
-partout où il ne sert pas de fond à du texte : bordures actives, barres du
-tableau de bord, halos.
+La géométrie (cartes, rayons, halos, pile de polices) reste celle des apps
+Budget Planner et Goal Planner ; seules les couleurs diffèrent.
 
-Le bouton 🌙 / ☀️ de l'en-tête bascule vers une déclinaison sombre de la même
-palette — le rose reste la couleur d'accent, posé sur des fonds prune. Le choix
-est conservé dans les réglages. Les deux thèmes respectent le niveau AA.
+Une règle gouverne l'usage de l'accent : `--accent` est **décoratif** — barres du
+tableau de bord, bordures actives, halos — et ne sert jamais de fond à du texte.
+Tout aplat portant du texte utilise `--accent-fort` (brique `#8a4a2b`), qui porte
+6,6:1 avec de l'ivoire. Le rouge d'erreur `#9c2318` est volontairement plus franc
+que la brique, pour rester distinguable de l'accent.
+
+Le bouton 🌙 / ☀️ de l'en-tête bascule vers une déclinaison nocturne des mêmes
+terres, l'accent passant à une terre cuite claire posée sur des fonds d'ombre.
+Le choix est conservé dans les réglages.
+
+Les contrastes sont vérifiés par calcul sur les trois fonds de chaque thème :
+toutes les couleurs de texte sont au niveau **AA**, de 4,6:1 à 12,1:1.
 
 ### Accessibilité
 

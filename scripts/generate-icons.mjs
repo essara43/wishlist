@@ -1,7 +1,7 @@
 /**
- * Génère les icônes PNG de la PWA : un paquet cadeau blanc sur un disque rose
- * pâle, posé sur le rose d'accent — même construction que les icônes du
- * Budget Planner, dont on reprend les trois teintes.
+ * Génère les icônes PNG de la PWA : un paquet cadeau ivoire sur un disque
+ * d'argile claire, posé sur la terre cuite d'accent — même construction que
+ * les icônes du Budget Planner, avec la palette earthy de l'application.
  *
  * Écrit en Node pur avec `zlib`, comme le script équivalent du Goal Planner :
  * pas de dépendance de build pour quatre images. Relancer avec
@@ -15,10 +15,10 @@ import { fileURLToPath } from 'node:url';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'icons');
 
-/* Palette partagée avec le Budget Planner. */
-const ACCENT = [255, 133, 179];   // #ff85b3 — fond de l'icône
-const PALE = [255, 211, 230];     // #ffd3e6 — disque intermédiaire
-const BLANC = [255, 255, 255];    // motif
+/* Palette « earthy terracotta » de l'application. */
+const ACCENT = [181, 113, 74];    // #b5714a — terracotta, fond de l'icône
+const PALE = [230, 215, 198];     // #e6d7c6 — argile claire, disque intermédiaire
+const BLANC = [255, 252, 247];    // #fffcf7 — ivoire, motif
 
 /* Le rendu est calculé à 3× puis moyenné : c'est notre anticrénelage. */
 const SUPERSAMPLE = 3;
@@ -52,8 +52,7 @@ function couleurMotif(x, y, echelle) {
   const my = (y - 0.5) / echelle + 0.5;
 
   /* Le disque pâle sert aussi de couleur aux rubans « creusés » dans le
-     cadeau : le motif ne compte ainsi que trois teintes, comme le cœur du
-     Budget Planner. */
+     cadeau : le motif ne compte ainsi que trois teintes. */
   const surDisque = dansDisque(mx, my, 0.5, 0.5, 0.365);
   const fond = surDisque ? PALE : ACCENT;
 

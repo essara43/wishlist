@@ -7,7 +7,7 @@
 
 /* Incrémenter cette version à chaque modification des fichiers listés :
    l'ancien cache est alors supprimé à l'activation. */
-const CACHE = 'wishlist-manager-v1';
+const CACHE = 'wishlist-manager-v2';
 
 const RESSOURCES = [
   './',
